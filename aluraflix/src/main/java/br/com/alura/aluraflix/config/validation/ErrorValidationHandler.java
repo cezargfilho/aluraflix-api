@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import br.com.alura.aluraflix.exception.NotValidURLException;
+
 @RestControllerAdvice
 public class ErrorValidationHandler {
 
@@ -31,5 +33,11 @@ public class ErrorValidationHandler {
 		});
 
 		return dtos;
+	}
+
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(NotValidURLException.class)
+	public FormErrorDto handle(NotValidURLException exception) {
+		return new FormErrorDto("url", exception.getMessage());
 	}
 }

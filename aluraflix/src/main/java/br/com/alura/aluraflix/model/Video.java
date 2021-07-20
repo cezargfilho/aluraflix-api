@@ -8,6 +8,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.apache.commons.validator.routines.UrlValidator;
+
+import br.com.alura.aluraflix.exception.NotValidURLException;
+
 @Entity
 public class Video {
 
@@ -30,8 +34,15 @@ public class Video {
 	public Video(String title, String description, String url) {
 		this.title = title;
 		this.description = description;
-		this.url = url;
+		this.url = isUrlValid(url);
 
+	}
+
+	private String isUrlValid(String url) {
+		if (new UrlValidator().isValid(url)) {
+			return url;
+		}
+		throw new NotValidURLException("URL passada é inválida");
 	}
 
 	public Long getId() {
@@ -63,7 +74,7 @@ public class Video {
 	}
 
 	public void setUrl(String url) {
-		this.url = url;
+		this.url = isUrlValid(url);
 	}
 
 	@Override
