@@ -31,6 +31,7 @@ public class Video {
 		this.title = title;
 		this.description = description;
 		this.url = url;
+
 	}
 
 	public Long getId() {
