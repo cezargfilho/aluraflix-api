@@ -1,0 +1,45 @@
+package br.com.alura.aluraflix.controller.form;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+
+import br.com.alura.aluraflix.model.Video;
+
+public class VideoForm {
+
+	@NotNull
+	@NotEmpty
+	@Length(min = 10, max = 100)
+	private String title;
+
+	@NotNull
+	@NotEmpty
+	@Length(min = 10, max = 50)
+	private String description;
+
+	@NotNull
+	@NotEmpty
+	@Length(min = 10, max = 60)
+	private String url;
+
+	public String getTitle() {
+		return title;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public Video converter() {
+		return new Video(this.title, this.description, this.url);
+	}
+
+	
+
+}
