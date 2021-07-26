@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import br.com.alura.aluraflix.config.validation.ErrorMessageDto;
 import br.com.alura.aluraflix.controller.dto.VideoDto;
 import br.com.alura.aluraflix.controller.form.UpdateVideoForm;
 import br.com.alura.aluraflix.controller.form.VideoForm;
+import br.com.alura.aluraflix.exception.VideoNotFoundException;
 import br.com.alura.aluraflix.model.Video;
 import br.com.alura.aluraflix.repository.VideoRepository;
 
@@ -39,12 +41,12 @@ public class VideosController {
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<?> detail(@PathVariable Long id) {
+	public ResponseEntity<VideoDto> detail(@PathVariable Long id) {
 		Optional<Video> video = videoRepository.findById(id);
 		if (video.isPresent()) {
-			return ResponseEntity.ok(video.get());
+			return ResponseEntity.ok(new VideoDto(video.get()));
 		}
-		return ResponseEntity.badRequest().body(new ErrorMessageDto("Video not found!"));
+		throw new VideoNotFoundException();
 	}
 
 	@PostMapping
@@ -66,20 +68,21 @@ public class VideosController {
 			Video video = form.atualizar(id, videoRepository);
 			return ResponseEntity.ok(new VideoDto(video));
 		}
-		return ResponseEntity.badRequest().build();
+		throw new VideoNotFoundException();
 	}
 
 	@DeleteMapping(value = "/{id}")
 	@Transactional
-	public ResponseEntity<?> remove(@PathVariable Long id) {
+	public ResponseEntity<ErrorMessageDto> remove(@PathVariable Long id) {
 		Optional<Video> optional = videoRepository.findById(id);
 
 		if (optional.isPresent()) {
 			videoRepository.delete(optional.get());
 
-			return ResponseEntity.ok().build();
+			return ResponseEntity.status(HttpStatus.OK).body(new ErrorMessageDto("The video has been removed"));
 		}
-		return ResponseEntity.badRequest().build();
+
+		throw new VideoNotFoundException();
 	}
 
 }

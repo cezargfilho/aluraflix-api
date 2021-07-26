@@ -6,7 +6,7 @@ public class NotValidURLException extends RuntimeException {
 
 	@Override
 	public String getMessage() {
-		return "A url é inválida";
+		return "Url is invalid";
 	}
 
 	public NotValidURLException() {
