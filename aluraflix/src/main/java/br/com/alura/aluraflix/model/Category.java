@@ -46,7 +46,7 @@ public class Category {
 	}
 
 	public void setColor(String color) {
-		this.color = color;
+		this.color = validateColor(color);
 	}
 
 	public Long getId() {

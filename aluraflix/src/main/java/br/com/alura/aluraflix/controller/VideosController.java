@@ -8,7 +8,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -80,7 +79,7 @@ public class VideosController {
 		if (optional.isPresent()) {
 			videoRepository.delete(optional.get());
 
-			return ResponseEntity.status(HttpStatus.OK).body(new ErrorMessageDto("The video has been removed"));
+			return ResponseEntity.ok(new ErrorMessageDto("The video has been removed"));
 		}
 
 		throw new EntityNotFoundException(ExceptionMessages.VIDEO_NOT_FOUND);
