@@ -79,7 +79,7 @@ public class VideosController {
 		if (optional.isPresent()) {
 			videoRepository.delete(optional.get());
 
-			return ResponseEntity.ok(new ErrorMessageDto("The video has been removed"));
+			return ResponseEntity.ok(new ErrorMessageDto(ExceptionMessages.VIDEO_WAS_REMOVED));
 		}
 
 		throw new EntityNotFoundException(ExceptionMessages.VIDEO_NOT_FOUND);
