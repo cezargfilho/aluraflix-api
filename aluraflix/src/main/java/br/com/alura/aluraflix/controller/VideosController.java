@@ -24,7 +24,8 @@ import br.com.alura.aluraflix.config.validation.ErrorMessageDto;
 import br.com.alura.aluraflix.controller.dto.VideoDto;
 import br.com.alura.aluraflix.controller.form.UpdateVideoForm;
 import br.com.alura.aluraflix.controller.form.VideoForm;
-import br.com.alura.aluraflix.exception.VideoNotFoundException;
+import br.com.alura.aluraflix.exception.EntityNotFoundException;
+import br.com.alura.aluraflix.exception.ExceptionMessages;
 import br.com.alura.aluraflix.model.Video;
 import br.com.alura.aluraflix.repository.VideoRepository;
 
@@ -46,7 +47,7 @@ public class VideosController {
 		if (video.isPresent()) {
 			return ResponseEntity.ok(new VideoDto(video.get()));
 		}
-		throw new VideoNotFoundException();
+		throw new EntityNotFoundException(ExceptionMessages.VIDEO_NOT_FOUND);
 	}
 
 	@PostMapping
@@ -68,7 +69,7 @@ public class VideosController {
 			Video video = form.atualizar(id, videoRepository);
 			return ResponseEntity.ok(new VideoDto(video));
 		}
-		throw new VideoNotFoundException();
+		throw new EntityNotFoundException(ExceptionMessages.VIDEO_NOT_FOUND);
 	}
 
 	@DeleteMapping(value = "/{id}")
@@ -82,7 +83,7 @@ public class VideosController {
 			return ResponseEntity.status(HttpStatus.OK).body(new ErrorMessageDto("The video has been removed"));
 		}
 
-		throw new VideoNotFoundException();
+		throw new EntityNotFoundException(ExceptionMessages.VIDEO_NOT_FOUND);
 	}
 
 }

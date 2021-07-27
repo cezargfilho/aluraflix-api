@@ -4,9 +4,11 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import org.apache.commons.validator.routines.UrlValidator;
 
@@ -27,6 +29,9 @@ public class Video {
 
 	@Column(length = 60, nullable = false)
 	private String url;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Category category;
 
 	public Video() {
 	}
@@ -75,6 +80,14 @@ public class Video {
 
 	public void setUrl(String url) {
 		this.url = isUrlValid(url);
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 
 	@Override

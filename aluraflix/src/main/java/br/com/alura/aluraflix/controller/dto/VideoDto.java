@@ -12,11 +12,14 @@ public class VideoDto {
 
 	private String url;
 
+	private String category;
+
 	public VideoDto(Video video) {
 		this.id = video.getId();
 		this.title = video.getTitle();
 		this.description = video.getDescription();
 		this.url = video.getUrl();
+		this.category = video.getCategory().getTitle();
 	}
 
 	public Long getId() {
@@ -33,6 +36,10 @@ public class VideoDto {
 
 	public String getUrl() {
 		return url;
+	}
+
+	public String getCategory() {
+		return category;
 	}
 
 }
