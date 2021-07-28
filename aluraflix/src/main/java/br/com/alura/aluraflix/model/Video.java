@@ -34,10 +34,11 @@ public class Video {
 	public Video() {
 	}
 
-	public Video(String title, String description, String url) {
+	public Video(String title, String description, String url, Category category) {
 		this.title = title;
 		this.description = description;
 		this.url = ValidationsUtils.isUrlValid(url);
+		this.category = category;
 
 	}
 
