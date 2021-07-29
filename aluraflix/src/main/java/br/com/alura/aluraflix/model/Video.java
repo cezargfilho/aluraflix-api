@@ -1,16 +1,16 @@
 package br.com.alura.aluraflix.model;
 
+import static br.com.alura.aluraflix.utils.ValidationsUtils.isUrlValid;
+
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
-import org.apache.commons.validator.routines.UrlValidator;
-
-import br.com.alura.aluraflix.exception.NotValidURLException;
+import javax.persistence.ManyToOne;;
 
 @Entity
 public class Video {
@@ -28,21 +28,18 @@ public class Video {
 	@Column(length = 60, nullable = false)
 	private String url;
 
+	@ManyToOne(fetch = FetchType.EAGER)
+	private Category category;
+
 	public Video() {
 	}
 
-	public Video(String title, String description, String url) {
+	public Video(String title, String description, String url, Category category) {
 		this.title = title;
 		this.description = description;
 		this.url = isUrlValid(url);
+		this.category = category;
 
-	}
-
-	private String isUrlValid(String url) {
-		if (new UrlValidator().isValid(url)) {
-			return url;
-		}
-		throw new NotValidURLException("URL passada é inválida");
 	}
 
 	public Long getId() {
@@ -75,6 +72,14 @@ public class Video {
 
 	public void setUrl(String url) {
 		this.url = isUrlValid(url);
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 
 	@Override

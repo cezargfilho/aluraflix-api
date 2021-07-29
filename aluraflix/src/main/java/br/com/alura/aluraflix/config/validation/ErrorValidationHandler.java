@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import br.com.alura.aluraflix.exception.NotValidURLException;
-import br.com.alura.aluraflix.exception.VideoNotFoundException;
+import br.com.alura.aluraflix.exception.EntityNotFoundException;
+import br.com.alura.aluraflix.exception.InvalidColorCodeException;
 
 @RestControllerAdvice
 public class ErrorValidationHandler {
@@ -41,10 +42,16 @@ public class ErrorValidationHandler {
 	public FormErrorDto handle(NotValidURLException exception) {
 		return new FormErrorDto("url", exception.getMessage());
 	}
-	
+
 	@ResponseStatus(code = HttpStatus.NOT_FOUND)
-	@ExceptionHandler(VideoNotFoundException.class)
-	public ErrorMessageDto handle(VideoNotFoundException exception) {
+	@ExceptionHandler(EntityNotFoundException.class)
+	public ErrorMessageDto handle(EntityNotFoundException exception) {
+		return new ErrorMessageDto(exception.getMessage());
+	}
+
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(InvalidColorCodeException.class)
+	public ErrorMessageDto handle(InvalidColorCodeException exception) {
 		return new ErrorMessageDto(exception.getMessage());
 	}
 }
