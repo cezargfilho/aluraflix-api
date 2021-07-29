@@ -1,15 +1,20 @@
 package br.com.alura.aluraflix.controller.form;
 
+import static br.com.alura.aluraflix.utils.ValidationsUtils.isNotNullAndBlank;
+
 import org.hibernate.validator.constraints.Length;
 
+import br.com.alura.aluraflix.config.validation.NotBlankConstraint;
 import br.com.alura.aluraflix.model.Category;
 import br.com.alura.aluraflix.repository.CategoryRepository;
 
 public class UpdateCategoryForm {
 
+	@NotBlankConstraint
 	@Length(min = 5, max = 20)
 	private String title;
 
+	@NotBlankConstraint
 	@Length(min = 7, max = 7)
 	private String color;
 
@@ -28,8 +33,8 @@ public class UpdateCategoryForm {
 	public Category update(Long id, CategoryRepository categoryRepository) {
 		Category category = categoryRepository.getById(id);
 		
-		if (this.title != null && !this.title.isBlank()) {category.setTitle(this.title);}
-		if (this.color != null && !this.color.isBlank()) {category.setColor(this.color);}
+		if (isNotNullAndBlank(this.title)) {category.setTitle(this.title);}
+		if (isNotNullAndBlank(this.color)) {category.setColor(this.color);}
 		
 		return category;
 	}

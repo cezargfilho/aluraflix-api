@@ -9,10 +9,7 @@ import br.com.alura.aluraflix.exception.ExceptionMessages;
 import br.com.alura.aluraflix.exception.InvalidColorCodeException;
 import br.com.alura.aluraflix.exception.NotValidURLException;
 
-public abstract class ValidationsUtils {
-
-	private ValidationsUtils() {
-	}
+public interface ValidationsUtils {
 
 	public static String isUrlValid(String url) {
 		if (new UrlValidator().isValid(url)) {
@@ -21,10 +18,8 @@ public abstract class ValidationsUtils {
 		throw new NotValidURLException(ExceptionMessages.URL_IS_INVALID);
 	}
 
-	public static boolean isNotBlank(String string) {
-		if (string.isBlank()) {
-		}
-		return false;
+	public static boolean isNotNullAndBlank(String string) {
+		return string != null && !string.trim().isEmpty();
 	}
 
 	public static String validateColor(String color) {

@@ -1,5 +1,7 @@
 package br.com.alura.aluraflix.model;
 
+import static br.com.alura.aluraflix.utils.ValidationsUtils.isUrlValid;
+
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -8,9 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-
-import br.com.alura.aluraflix.utils.ValidationsUtils;
+import javax.persistence.ManyToOne;;
 
 @Entity
 public class Video {
@@ -37,7 +37,7 @@ public class Video {
 	public Video(String title, String description, String url, Category category) {
 		this.title = title;
 		this.description = description;
-		this.url = ValidationsUtils.isUrlValid(url);
+		this.url = isUrlValid(url);
 		this.category = category;
 
 	}
@@ -71,7 +71,7 @@ public class Video {
 	}
 
 	public void setUrl(String url) {
-		this.url = ValidationsUtils.isUrlValid(url);
+		this.url = isUrlValid(url);
 	}
 
 	public Category getCategory() {
