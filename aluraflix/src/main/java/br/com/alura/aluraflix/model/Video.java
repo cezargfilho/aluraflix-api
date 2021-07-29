@@ -28,7 +28,7 @@ public class Video {
 	@Column(length = 60, nullable = false)
 	private String url;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Category category;
 
 	public Video() {

@@ -1,7 +1,6 @@
 package br.com.alura.aluraflix.controller.form;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 
@@ -11,22 +10,19 @@ import br.com.alura.aluraflix.repository.CategoryRepository;
 
 public class VideoForm {
 
-	@NotNull
 	@NotEmpty
 	@Length(min = 10, max = 100)
 	private String title;
 
-	@NotNull
 	@NotEmpty
 	@Length(min = 10, max = 50)
 	private String description;
 
-	@NotNull
+	
 	@NotEmpty
 	@Length(min = 10, max = 60)
 	private String url;
 	
-	@NotNull
 	@NotEmpty
 	private String categoryId;
 

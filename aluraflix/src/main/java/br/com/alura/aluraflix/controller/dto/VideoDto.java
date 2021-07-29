@@ -2,7 +2,6 @@ package br.com.alura.aluraflix.controller.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import br.com.alura.aluraflix.model.Video;
 
@@ -16,14 +15,14 @@ public class VideoDto {
 
 	private String url;
 
-	private Long category;
+	private Long categoryId;
 
 	public VideoDto(Video video) {
 		this.id = video.getId();
 		this.title = video.getTitle();
 		this.description = video.getDescription();
 		this.url = video.getUrl();
-		this.category = video.getCategory().getId();
+		this.categoryId = video.getCategory().getId();
 	}
 
 	public Long getId() {
@@ -42,14 +41,14 @@ public class VideoDto {
 		return url;
 	}
 
-	public Long getCategory() {
-		return category;
+	public Long getCategoryId() {
+		return categoryId;
 	}
 
-	public static List<VideoDto> converter(Optional<List<Video>> optional) {
+	public static List<VideoDto> converter(List<Video> videos) {
 		List<VideoDto> dtos = new ArrayList<>();
-		if (optional.isPresent()) {
-			optional.get().forEach(v -> dtos.add(new VideoDto(v)));
+		if (videos != null) {
+			videos.forEach(v -> dtos.add(new VideoDto(v)));
 			return dtos;
 		}
 		return dtos;

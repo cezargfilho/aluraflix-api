@@ -49,8 +49,8 @@ public class VideosController {
 			videos.forEach(v -> dtos.add(new VideoDto(v)));		
 			return dtos;			
 		} else {
-			Optional<List<Video>> optional = videoRepository.findByTitle(search);
-				return VideoDto.converter(optional);
+			List<Video> videos = videoRepository.findByTitle(search);
+				return VideoDto.converter(videos);
 		}		
 	}
 
