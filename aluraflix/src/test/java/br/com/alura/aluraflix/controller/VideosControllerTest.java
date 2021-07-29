@@ -1,8 +1,10 @@
 package br.com.alura.aluraflix.controller;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.json.JSONObject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import br.com.alura.aluraflix.model.Category;
 import br.com.alura.aluraflix.model.Video;
+import br.com.alura.aluraflix.repository.CategoryRepository;
 import br.com.alura.aluraflix.repository.VideoRepository;
 
 @ExtendWith(SpringExtension.class)
@@ -27,19 +31,36 @@ class VideosControllerTest {
 	private MockMvc mockMvc;
 
 	@Autowired
-	private VideoRepository repository;
+	private VideoRepository viedeoRepository;
+	
+	@Autowired
+	private CategoryRepository categoryRepository;
+
+	private Category category;
+
+	private URI uriVideos;
+	
+	@BeforeEach
+	void init() throws URISyntaxException {
+		uriVideos = new URI("/videos");
+		
+		category = new Category();
+		category.setTitle("COZINHA");
+		category.setColor("#000000");
+		categoryRepository.save(category);
+	}
 
 	@Test
 	void deveRetornar200ParaInserirVideo() throws Exception {
-		URI uri = new URI("/videos");
-
+		
 		JSONObject json = new JSONObject();
-		json.put("title", "DREAD HOT FALA DO BOLTZ EM LIVE E CASIMIRO SE REVOLTA | Cortes do Casimito");
+		json.put("title", "FALA DO BOLTZ EM LIVE E CASIMIRO SE REVOLTA | Cortes do Casimito");
 		json.put("description", "Live do dia 28/05/2021 para o dia 29/05/2021");
-		json.put("url", "https://youtu.be/Ok-6d04UFwQ");
+		json.put("url", "https://youtu.be/Ok6d04UFwQ");
+		json.put("categoryId", "1");
 		
 		mockMvc.perform(MockMvcRequestBuilders
-				.post(uri)
+				.post(uriVideos)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(json.toString()))
 		.andExpect(MockMvcResultMatchers
@@ -50,16 +71,16 @@ class VideosControllerTest {
 	
 	@Test
 	void deveRetornar200ParaListagem() throws Exception {
-		
 		Video video = new Video(
-				"DREAD HOT FALA DO BOLTZ EM LIVE E CASIMIRO SE REVOLTA | Cortes do Casimito"
-				, "Live do dia 28/05/2021 para o dia 29/05/2021", "https://youtu.be/Ok-6d04UFwQ");
+				"FALA DO BOLTZ EM LIVE E CASIMIRO SE REVOLTA | Cortes do Casimito",
+				"Live do dia 28/05/2021 para o dia 29/05/2021",
+				"https://youtu.be/Ok6d04UFwQ",
+				category);
 		
-		repository.save(video);
+		viedeoRepository.save(video);
 		
-		URI uri = new URI("/videos");
 		mockMvc.perform(MockMvcRequestBuilders
-				.get(uri))
+				.get(uriVideos))
 			    .andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
