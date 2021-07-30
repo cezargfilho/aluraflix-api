@@ -45,6 +45,22 @@ public class VideoForm {
 		return categoryId;
 	}
 
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
+	}
+
 	public Video converter(CategoryRepository categoryRepository) {
 
 		if (ValidationsUtils.isNotNullAndBlank(this.categoryId)) {

@@ -12,9 +12,9 @@ public final class ExceptionMessages {
 
 	public static final String INVALID_COLOR_CODE = "Invalid color code";
 
-	public static final String INVALID_FIELD = "invalid field";
+	public static final String INVALID_FIELD = "Invalid field";
 	
 	public static final String FIELD_CANT_BE_BLANK = "Field can't be blank";
 
-	public static final String VIDEO_WAS_REMOVED = " Video was removed";
+	public static final String VIDEO_WAS_REMOVED = "Video was removed";
 }
