@@ -1,5 +1,10 @@
 package br.com.alura.aluraflix.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.net.URI;
 
 import org.json.JSONArray;
@@ -13,9 +18,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -48,12 +50,12 @@ class CategoriesControllerTest {
 		uri = new URI("/categorias/1/videos");
 
 		mockMvc.perform(
-				MockMvcRequestBuilders.get(uri))
-		.andDo(MockMvcResultHandlers.print())
+				get(uri))
+		.andDo(print())
 		.andExpect(
-				MockMvcResultMatchers.status().isOk())
+				status().isOk())
 		.andExpect(
-				MockMvcResultMatchers.content().json(arrayJson.toString()));
+				content().json(arrayJson.toString()));
 	}
 
 }

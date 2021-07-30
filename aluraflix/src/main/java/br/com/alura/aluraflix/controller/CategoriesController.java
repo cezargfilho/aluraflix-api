@@ -1,13 +1,17 @@
 package br.com.alura.aluraflix.controller;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,8 +46,9 @@ public class CategoriesController {
 	private VideoRepository videosRepository;
 
 	@GetMapping
-	public List<Category> list() {
-		return categoryRepository.findAll();
+	@Cacheable(value = "listCategories")
+	public Page<Category> list(@PageableDefault(page = 0, size = 5) Pageable pageable) {
+		return categoryRepository.findAll(pageable);
 	}
 
 	@GetMapping(value = "/{id}")
@@ -58,6 +63,7 @@ public class CategoriesController {
 
 	@PostMapping
 	@Transactional
+	@CacheEvict(value = {"listCategories", "listVideosByCategory"}, allEntries = true)
 	public ResponseEntity<CategoryDto> register(@RequestBody @Valid CategoryForm form,
 			UriComponentsBuilder uriBuilder) {
 		
@@ -70,6 +76,7 @@ public class CategoriesController {
 
 	@PutMapping(value = "/{id}")
 	@Transactional
+	@CacheEvict(value = {"listCategories", "listVideosByCategory"}, allEntries = true)
 	public ResponseEntity<CategoryDto> update(@PathVariable Long id, @RequestBody @Valid UpdateCategoryForm form) {
 		Optional<Category> optional = categoryRepository.findById(id);
 
@@ -82,6 +89,7 @@ public class CategoriesController {
 
 	@DeleteMapping(value = "/{id}")
 	@Transactional
+	@CacheEvict(value = {"listCategories", "listVideosByCategory"}, allEntries = true)
 	public ResponseEntity<ErrorMessageDto> remove(@PathVariable Long id) {
 		Optional<Category> optional = categoryRepository.findById(id);
 
@@ -93,12 +101,15 @@ public class CategoriesController {
 	}
 
 	@GetMapping(value = "/{id}/videos")
-	public ResponseEntity<List<VideoDto>> listVideosByCategory(@PathVariable Long id) {
+	@Cacheable(value = "listVideosByCategory")
+	public Page<VideoDto> listVideosByCategory(
+			@PathVariable Long id,
+			@PageableDefault Pageable pageable) {
 		Optional<Category> optional = categoryRepository.findById(id);
 
 		if (optional.isPresent()) {
-			List<Video> videos = videosRepository.findAllByCategory(optional.get());
-			return ResponseEntity.ok(VideoDto.converter(videos));
+			Page<Video> videos = videosRepository.findAllByCategory(optional.get(), pageable);
+			return VideoDto.converter(videos);
 		}
 		throw new EntityNotFoundException(ExceptionMessages.CATEGORY_NOT_FOUND);
 	}

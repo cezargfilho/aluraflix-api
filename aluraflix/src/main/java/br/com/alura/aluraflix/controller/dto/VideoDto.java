@@ -1,7 +1,6 @@
 package br.com.alura.aluraflix.controller.dto;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 import br.com.alura.aluraflix.model.Video;
 
@@ -45,13 +44,8 @@ public class VideoDto {
 		return categoryId;
 	}
 
-	public static List<VideoDto> converter(List<Video> videos) {
-		List<VideoDto> dtos = new ArrayList<>();
-		if (videos != null) {
-			videos.forEach(v -> dtos.add(new VideoDto(v)));
-			return dtos;
-		}
-		return dtos;
+	public static Page<VideoDto> converter(Page<Video> videos) {
+		return videos.map(VideoDto::new);
 	}
 
 }
