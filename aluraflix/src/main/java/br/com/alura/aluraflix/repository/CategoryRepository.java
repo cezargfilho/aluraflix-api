@@ -6,4 +6,6 @@ import br.com.alura.aluraflix.model.Category;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
+	Category findByTitle(String title);
+
 }

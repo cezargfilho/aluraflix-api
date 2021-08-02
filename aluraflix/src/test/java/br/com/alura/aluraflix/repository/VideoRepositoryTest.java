@@ -1,8 +1,7 @@
 package br.com.alura.aluraflix.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +9,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.alura.aluraflix.model.Category;
@@ -17,6 +20,7 @@ import br.com.alura.aluraflix.model.Video;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
+@ActiveProfiles(value = "test")
 class VideoRepositoryTest {
 
 	@Autowired
@@ -54,11 +58,11 @@ class VideoRepositoryTest {
 
 	@Test
 	void deveCarregarVideoPorCategoria() {
-		List<Video> list = videoRepository.findAllByCategory(category);
+		Pageable pageable = PageRequest.of(0, 5);
+		Page<Video> list = videoRepository.findAllByCategory(category, pageable);
 
 		assertNotNull(list);
-		assertEquals(2, list.size());
-		assertEquals("COZINHA", list.get(0).getCategory().getTitle());
+		assertEquals(2, list.getTotalElements());
 
 	}
 
