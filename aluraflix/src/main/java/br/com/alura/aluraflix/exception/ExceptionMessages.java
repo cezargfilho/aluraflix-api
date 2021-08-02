@@ -17,4 +17,6 @@ public final class ExceptionMessages {
 	public static final String FIELD_CANT_BE_BLANK = "Field can't be blank";
 
 	public static final String VIDEO_WAS_REMOVED = "Video was removed";
+
+	public static final String TITLE_NOT_FOUND = "Video with title 'REPLACE' not found";
 }

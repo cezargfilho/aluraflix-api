@@ -25,7 +25,7 @@ public class Category {
 	}
 
 	public Category(String title, String color) {
-		this.title = title;
+		this.title = title.toUpperCase();
 		this.color = ValidationsUtils.validateColor(color);
 	}
 

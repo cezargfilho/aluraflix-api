@@ -48,14 +48,17 @@ public class VideosController {
 	@Cacheable(value = "listVideos")
 	public Page<VideoDto> list(
 			@RequestParam(required = false) String search, 
-			@PageableDefault Pageable pageable) {
+			@PageableDefault(page = 0, size = 5) Pageable pageable) {
 		
-		if (search == null) {
+		if (search == null || search.trim().isEmpty()) {
 			Page<Video> videos = videoRepository.findAllVideosWithCategory(pageable);		
 			return videos.map(VideoDto::new);			
 		} else {
 			Page<Video> videos = videoRepository.findByTitle(search, pageable);
-				return VideoDto.converter(videos);
+			if (videos.getNumberOfElements() != 0) {
+				return VideoDto.converter(videos);				
+			}
+			throw new EntityNotFoundException(ExceptionMessages.TITLE_NOT_FOUND.replace("REPLACE", search));
 		}		
 	}
 

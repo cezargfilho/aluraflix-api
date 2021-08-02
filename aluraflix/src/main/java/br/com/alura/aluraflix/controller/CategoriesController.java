@@ -95,7 +95,7 @@ public class CategoriesController {
 
 		if (optional.isPresent()) {
 			categoryRepository.delete(optional.get());
-			return ResponseEntity.ok(new ErrorMessageDto("The category has been removed"));
+			return ResponseEntity.ok(new ErrorMessageDto("The category was removed"));
 		}
 		throw new EntityNotFoundException(ExceptionMessages.CATEGORY_NOT_FOUND);
 	}
@@ -104,7 +104,7 @@ public class CategoriesController {
 	@Cacheable(value = "listVideosByCategory")
 	public Page<VideoDto> listVideosByCategory(
 			@PathVariable Long id,
-			@PageableDefault Pageable pageable) {
+			@PageableDefault(page = 0, size = 5) Pageable pageable) {
 		Optional<Category> optional = categoryRepository.findById(id);
 
 		if (optional.isPresent()) {
