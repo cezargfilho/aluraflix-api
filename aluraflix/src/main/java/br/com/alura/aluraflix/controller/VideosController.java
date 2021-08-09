@@ -63,10 +63,13 @@ public class VideosController {
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<VideoDto> detail(@PathVariable Long id) {
-		Optional<Video> video = videoRepository.findById(id);
-		if (video.isPresent()) {
-			return ResponseEntity.ok(new VideoDto(video.get()));
+	public Page<VideoDto> detail(
+			@PathVariable Long id, 
+			@PageableDefault(page = 0, size = 5) Pageable pageable) {
+		
+		Page<Video> videos = videoRepository.findById(id, pageable);
+		if (videos.getNumberOfElements() != 0) {
+			return VideoDto.converter(videos);
 		}
 		throw new EntityNotFoundException(ExceptionMessages.VIDEO_NOT_FOUND);
 	}

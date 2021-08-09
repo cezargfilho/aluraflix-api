@@ -1,7 +1,5 @@
 package br.com.alura.aluraflix.repository;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,6 +21,6 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
 
 	Page<Video> findAllByCategory(Category category, Pageable pageable);
 
-	List<Video> findAllByCategoryId(Long id);
+	Page<Video> findById(Long id, Pageable pageable);
 
 }

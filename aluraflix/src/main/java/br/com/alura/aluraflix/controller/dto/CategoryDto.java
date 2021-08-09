@@ -1,5 +1,7 @@
 package br.com.alura.aluraflix.controller.dto;
 
+import org.springframework.data.domain.Page;
+
 import br.com.alura.aluraflix.model.Category;
 
 public class CategoryDto {
@@ -26,6 +28,10 @@ public class CategoryDto {
 
 	public String getColor() {
 		return color;
+	}
+	
+	public static Page<CategoryDto> converter(Page<Category> categories) {
+		return categories.map(CategoryDto::new);
 	}
 
 }

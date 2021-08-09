@@ -184,7 +184,7 @@ class VideosControllerTest {
 		JSONObject json = new JSONObject();
 		json.put("message", "Video was removed");
 		
-		mockMvc.perform(delete("/videos/2"))
+		mockMvc.perform(delete("/videos/1"))
 		.andExpect(status().isOk())
 		.andExpect(content().json(json.toString()));
 	}
