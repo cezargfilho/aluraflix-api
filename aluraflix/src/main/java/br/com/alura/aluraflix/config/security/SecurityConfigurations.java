@@ -12,16 +12,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import br.com.alura.aluraflix.repository.UserRepository;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 
 	private AuthenticationService autenticacaoService;
+	private TokenService tokenService;
+	private UserRepository userRepository;
 	
 	@Autowired
-	public SecurityConfigurations(AuthenticationService autenticacaoService) {
+	public SecurityConfigurations(AuthenticationService autenticacaoService, TokenService tokenService, UserRepository userRepository) {
 		this.autenticacaoService = autenticacaoService;
+		this.tokenService = tokenService;
+		this.userRepository = userRepository;
 	}
 	
 	@Bean
@@ -42,7 +49,11 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.GET, "/videos/free").permitAll()
 		.anyRequest().authenticated()
 		.and().csrf().disable()
-		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+		.and().addFilterBefore(
+				new TokenAuthenticationFilter(this.tokenService, this.userRepository),
+				UsernamePasswordAuthenticationFilter.class);
+
 	}
 
 	@Override

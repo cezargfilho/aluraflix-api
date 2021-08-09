@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import br.com.alura.aluraflix.model.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
 @Service
@@ -38,7 +39,20 @@ public class TokenService {
 	private Date toDate(LocalDateTime date) {
 		return Date.from(date.atZone(ZoneId.systemDefault()).toInstant());
 	}
-	
-	
+
+	public boolean isValidToken(String token) {
+		try {
+			Jwts.parser().setSigningKey(this.secretKey).parseClaimsJws(token);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public Long getUserId(String token) {
+		Claims claims = Jwts.parser().setSigningKey(this.secretKey).parseClaimsJws(token).getBody();
+		String userId = claims.getSubject();
+		return Long.parseLong(userId);
+	}
 
 }
