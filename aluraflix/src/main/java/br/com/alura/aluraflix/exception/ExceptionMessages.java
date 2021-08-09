@@ -19,4 +19,6 @@ public final class ExceptionMessages {
 	public static final String VIDEO_WAS_REMOVED = "Video was removed";
 
 	public static final String TITLE_NOT_FOUND = "Video with title 'REPLACE' not found";
+
+	public static final String USER_NOT_FOUND = "User not found";
 }

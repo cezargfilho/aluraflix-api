@@ -1,3 +1,5 @@
+INSERT INTO USER(name, email, password) VALUES('Teste', 'teste@aluraflix.com', '$2a$12$0OIZRBX3zA10DRRv4SanmebYNBcI3Z5VJHrAPqZwMZFGeWkmCMVNu');
+
 INSERT INTO CATEGORY(title, color) VALUES('LIVRE','#AAAAAA');
 INSERT INTO CATEGORY(title, color) VALUES('PROGRAMACAO','#2DBF13');
 INSERT INTO CATEGORY(title, color) VALUES('FRONT-END','#A90A00');
