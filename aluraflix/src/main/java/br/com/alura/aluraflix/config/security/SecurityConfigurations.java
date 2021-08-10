@@ -47,18 +47,21 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 		.antMatchers(HttpMethod.POST, "/auth").permitAll()
 		.antMatchers(HttpMethod.GET, "/videos/free").permitAll()
+		.antMatchers(HttpMethod.DELETE, "/videos/*").hasRole("ADMIN")
 		.anyRequest().authenticated()
 		.and().csrf().disable()
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and().addFilterBefore(
 				new TokenAuthenticationFilter(this.tokenService, this.userRepository),
 				UsernamePasswordAuthenticationFilter.class);
-
 	}
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		super.configure(web);
+		web.ignoring()
+		.antMatchers(
+				"/**.html", "/v2/api-docs", "/webjars/**", 
+				"/configuration/**", "/swagger-resources/**");
 	}
 
 }

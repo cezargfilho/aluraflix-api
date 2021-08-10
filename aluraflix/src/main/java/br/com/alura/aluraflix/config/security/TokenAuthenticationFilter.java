@@ -42,7 +42,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 	
 	private void authenticateClient(String token) {
 		Long userId = tokenService.getUserId(token);
-		System.out.println("ID DO USUARIO E: " + userId);
 		Optional<User> optional = userRepository.findById(userId);
 		if (!optional.isPresent()) {
 			throw new UsernameNotFoundException("Autenticação inválida");

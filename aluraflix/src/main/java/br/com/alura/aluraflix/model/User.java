@@ -1,5 +1,6 @@
 package br.com.alura.aluraflix.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class User implements UserDetails {
 	private String password;
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-	private List<Profile> profiles;
+	private List<Profile> profiles = new ArrayList<>();
 
 	public String getName() {
 		return name;

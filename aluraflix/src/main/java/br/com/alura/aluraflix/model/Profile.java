@@ -18,9 +18,6 @@ public class Profile implements GrantedAuthority {
 
 	private String name;
 
-	public Profile() {
-	}
-
 	public String getName() {
 		return name;
 	}
