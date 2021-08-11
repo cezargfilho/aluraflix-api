@@ -52,11 +52,14 @@ public class CategoriesController {
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<CategoryDto> detail(@PathVariable Long id) {
-		Optional<Category> optional = categoryRepository.findById(id);
+	public Page<CategoryDto> detail(
+			@PathVariable Long id,
+			@PageableDefault(page = 0, size = 5) Pageable pageable) {
 		
-		if (optional.isPresent()) {
-			return ResponseEntity.ok(new CategoryDto(optional.get()));
+		Page<Category> categories = categoryRepository.findById(id, pageable);
+		
+		if (categories.getNumberOfElements() != 0) {
+			return CategoryDto.converter(categories);
 		}
 		throw new EntityNotFoundException(ExceptionMessages.CATEGORY_NOT_FOUND);
 	}

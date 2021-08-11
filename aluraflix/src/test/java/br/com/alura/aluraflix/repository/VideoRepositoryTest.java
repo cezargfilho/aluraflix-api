@@ -1,6 +1,7 @@
 package br.com.alura.aluraflix.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -57,13 +58,40 @@ class VideoRepositoryTest {
 	}
 
 	@Test
-	void deveCarregarVideoPorCategoria() {
+	void givenVideos_whenSearchedByCategory() {
 		Pageable pageable = PageRequest.of(0, 5);
 		Page<Video> list = videoRepository.findAllByCategory(category, pageable);
 
 		assertNotNull(list);
 		assertEquals(2, list.getTotalElements());
+	}
 
+	@Test
+	void givenVideos_whenSearchedAllWithCategory() {
+		Pageable pageable = PageRequest.of(0, 5);
+		Page<Video> page = videoRepository.findAllVideosWithCategory(pageable);
+
+		assertFalse(page.getContent().isEmpty());
+		assertEquals(2, page.getNumberOfElements());
+	}
+
+	@Test
+	void givenVideos_whenSearchedByTitle() {
+		Pageable pageable = PageRequest.of(0, 5);
+		Page<Video> page = videoRepository.findByTitle("GOLS DA RODADA BRASILEIRAO", pageable);
+
+		assertFalse(page.getContent().isEmpty());
+
+		assertEquals(2, page.getNumberOfElements());
+	}
+
+	@Test
+	void givenVideos_whenSearchedById() {
+		Pageable pageable = PageRequest.of(0, 5);
+		Page<Video> page = videoRepository.findById(1L, pageable);
+
+		assertFalse(page.getContent().isEmpty());
+		assertEquals(1, page.getNumberOfElements());
 	}
 
 }
