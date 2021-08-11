@@ -1,9 +1,7 @@
 package br.com.alura.aluraflix.controller;
 
 import java.net.URI;
-import java.util.Optional;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,93 +26,60 @@ import br.com.alura.aluraflix.controller.dto.CategoryDto;
 import br.com.alura.aluraflix.controller.dto.VideoDto;
 import br.com.alura.aluraflix.controller.form.CategoryForm;
 import br.com.alura.aluraflix.controller.form.UpdateCategoryForm;
-import br.com.alura.aluraflix.exception.EntityNotFoundException;
-import br.com.alura.aluraflix.exception.ExceptionMessages;
 import br.com.alura.aluraflix.model.Category;
-import br.com.alura.aluraflix.model.Video;
-import br.com.alura.aluraflix.repository.CategoryRepository;
-import br.com.alura.aluraflix.repository.VideoRepository;
+import br.com.alura.aluraflix.service.CategoriesService;
 
 @RestController
 @RequestMapping(value = "categorias")
 public class CategoriesController {
-
+	
 	@Autowired
-	private CategoryRepository categoryRepository;
-
-	@Autowired
-	private VideoRepository videosRepository;
+	private CategoriesService categoriesService;
 
 	@GetMapping
 	@Cacheable(value = "listCategories")
 	public Page<Category> list(@PageableDefault(page = 0, size = 5) Pageable pageable) {
-		return categoryRepository.findAll(pageable);
+		return categoriesService.listAll(pageable);
 	}
 
 	@GetMapping(value = "/{id}")
-	public Page<CategoryDto> detail(
-			@PathVariable Long id,
-			@PageableDefault(page = 0, size = 5) Pageable pageable) {
-		
-		Page<Category> categories = categoryRepository.findById(id, pageable);
-		
-		if (categories.getNumberOfElements() != 0) {
-			return CategoryDto.converter(categories);
-		}
-		throw new EntityNotFoundException(ExceptionMessages.CATEGORY_NOT_FOUND);
+	public ResponseEntity<CategoryDto> detail(@PathVariable Long id) {
+		CategoryDto dto = categoriesService.detail(id);
+		return ResponseEntity.ok(dto);
 	}
 
 	@PostMapping
-	@Transactional
 	@CacheEvict(value = {"listCategories", "listVideosByCategory"}, allEntries = true)
 	public ResponseEntity<CategoryDto> register(@RequestBody @Valid CategoryForm form,
 			UriComponentsBuilder uriBuilder) {
 		
-		Category category = form.converter();
-		categoryRepository.save(category);
-
-		URI uri = uriBuilder.path("/categorias/{id}").buildAndExpand(category.getId()).toUri();
-		return ResponseEntity.created(uri).body(new CategoryDto(category));
+		CategoryDto dto = categoriesService.register(form);
+		URI uri = uriBuilder.path("/categorias/{id}").buildAndExpand(dto.getId()).toUri();
+		return ResponseEntity.created(uri).body(dto);
 	}
 
 	@PutMapping(value = "/{id}")
-	@Transactional
 	@CacheEvict(value = {"listCategories", "listVideosByCategory"}, allEntries = true)
-	public ResponseEntity<CategoryDto> update(@PathVariable Long id, @RequestBody @Valid UpdateCategoryForm form) {
-		Optional<Category> optional = categoryRepository.findById(id);
-
-		if (optional.isPresent()) {
-			Category category = form.update(id, categoryRepository);
-			return ResponseEntity.ok(new CategoryDto(category));
-		}
-		throw new EntityNotFoundException(ExceptionMessages.CATEGORY_NOT_FOUND);
+	public ResponseEntity<CategoryDto> update(@PathVariable Long id, 
+			@RequestBody @Valid UpdateCategoryForm form) {
+		
+		CategoryDto dto = categoriesService.update(id, form);
+		return ResponseEntity.ok(dto);
 	}
 
 	@DeleteMapping(value = "/{id}")
-	@Transactional
-	@CacheEvict(value = {"listCategories", "listVideosByCategory"}, allEntries = true)
+	@CacheEvict(value = { "listCategories", "listVideosByCategory" }, allEntries = true)
 	public ResponseEntity<ErrorMessageDto> remove(@PathVariable Long id) {
-		Optional<Category> optional = categoryRepository.findById(id);
-
-		if (optional.isPresent()) {
-			categoryRepository.delete(optional.get());
-			return ResponseEntity.ok(new ErrorMessageDto("The category was removed"));
-		}
-		throw new EntityNotFoundException(ExceptionMessages.CATEGORY_NOT_FOUND);
+		ErrorMessageDto dto = categoriesService.remove(id);
+		return ResponseEntity.ok(dto);
 	}
 
 	@GetMapping(value = "/{id}/videos")
 	@Cacheable(value = "listVideosByCategory")
-	public Page<VideoDto> listVideosByCategory(
-			@PathVariable Long id,
+	public Page<VideoDto> listVideosByCategory(@PathVariable Long id,
 			@PageableDefault(page = 0, size = 5) Pageable pageable) {
-		Optional<Category> optional = categoryRepository.findById(id);
 
-		if (optional.isPresent()) {
-			Page<Video> videos = videosRepository.findAllByCategory(optional.get(), pageable);
-			return VideoDto.converter(videos);
-		}
-		throw new EntityNotFoundException(ExceptionMessages.CATEGORY_NOT_FOUND);
+		return categoriesService.listVideosByCategory(id, pageable);
 	}
 
 }
