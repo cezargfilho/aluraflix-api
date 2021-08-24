@@ -9,9 +9,7 @@ public class NotBlankValidator implements ConstraintValidator<NotBlankConstraint
 
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
-		if (isNotNullAndBlank(value))
-			return true;
-		if (value == null)
+		if (isNotNullAndBlank(value) || value == null)
 			return true;
 
 		return false;

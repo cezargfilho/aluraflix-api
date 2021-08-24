@@ -20,11 +20,15 @@ import br.com.alura.aluraflix.service.AuthService;
 @Profile("prod")
 public class AuthenticationController {
 
-	@Autowired
 	private AuthService authService;
 	
-	@Autowired
 	private AuthenticationManager authManager;
+	
+	@Autowired
+	public AuthenticationController(AuthenticationManager authManager, AuthService authService) {
+		this.authManager = authManager;
+		this.authService = authService;
+	}
 
 	@PostMapping
 	public ResponseEntity<TokenDto> authenticate(@RequestBody @Valid LoginForm form) {

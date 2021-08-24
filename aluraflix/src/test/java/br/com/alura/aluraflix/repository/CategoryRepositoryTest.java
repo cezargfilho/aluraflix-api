@@ -38,15 +38,6 @@ class CategoryRepositoryTest {
 		em.persist(category);
 	}
 
-//	@Test
-//	void givenPage_whenSearchedByCategoryId() {
-//		Pageable pageable = PageRequest.of(0, 5);
-//		Page<Category> page = categoryRepository.findById(1L, pageable);
-//
-//		assertFalse(page.getContent().isEmpty());
-//		assertEquals(1, page.getNumberOfElements());
-//	}
-
 	@Test
 	void givenCategory_whenSearchedByTitle() {
 		Category category = categoryRepository.findByTitle("COZINHA");
