@@ -1,9 +1,7 @@
 package br.com.alura.aluraflix.controller;
 
 import java.net.URI;
-import java.util.Optional;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,21 +26,14 @@ import br.com.alura.aluraflix.config.validation.ErrorMessageDto;
 import br.com.alura.aluraflix.controller.dto.VideoDto;
 import br.com.alura.aluraflix.controller.form.UpdateVideoForm;
 import br.com.alura.aluraflix.controller.form.VideoForm;
-import br.com.alura.aluraflix.exception.EntityNotFoundException;
-import br.com.alura.aluraflix.exception.ExceptionMessages;
-import br.com.alura.aluraflix.model.Video;
-import br.com.alura.aluraflix.repository.CategoryRepository;
-import br.com.alura.aluraflix.repository.VideoRepository;
+import br.com.alura.aluraflix.service.VideosService;
 
 @RestController
 @RequestMapping(value = "/videos")
 public class VideosController {
-
-	@Autowired
-	private VideoRepository videoRepository;
 	
 	@Autowired
-	private CategoryRepository categoryRepository;
+	private VideosService videosService;
 
 	@GetMapping
 	@Cacheable(value = "listVideos")
@@ -50,66 +41,39 @@ public class VideosController {
 			@RequestParam(required = false) String search, 
 			@PageableDefault(page = 0, size = 5) Pageable pageable) {
 		
-		if (search == null || search.trim().isEmpty()) {
-			Page<Video> videos = videoRepository.findAllVideosWithCategory(pageable);		
-			return videos.map(VideoDto::new);			
-		} else {
-			Page<Video> videos = videoRepository.findByTitle(search, pageable);
-			if (videos.getNumberOfElements() != 0) {
-				return VideoDto.converter(videos);				
-			}
-			throw new EntityNotFoundException(ExceptionMessages.TITLE_NOT_FOUND.replace("REPLACE", search));
-		}		
+		return videosService.listAll(search, pageable);
 	}
 
 	@GetMapping(value = "/{id}")
-	public Page<VideoDto> detail(
-			@PathVariable Long id, 
-			@PageableDefault(page = 0, size = 5) Pageable pageable) {
-		
-		Page<Video> videos = videoRepository.findById(id, pageable);
-		if (videos.getNumberOfElements() != 0) {
-			return VideoDto.converter(videos);
-		}
-		throw new EntityNotFoundException(ExceptionMessages.VIDEO_NOT_FOUND);
+	public ResponseEntity<VideoDto> detail(@PathVariable Long id) {
+		VideoDto dto = videosService.detail(id);
+		return ResponseEntity.ok(dto);
 	}
 
 	@PostMapping
-	@Transactional
 	@CacheEvict(value = {"listVideos"}, allEntries = true)
-	public ResponseEntity<VideoDto> register(@RequestBody @Valid VideoForm form, UriComponentsBuilder uriBuilder) {
-		Video video = form.converter(categoryRepository);
-		videoRepository.save(video);
+	public ResponseEntity<VideoDto> register(
+			@RequestBody @Valid VideoForm form, UriComponentsBuilder uriBuilder) {
 
-		URI uri = uriBuilder.path("/videos/{id}").buildAndExpand(video.getId()).toUri();
-		return ResponseEntity.created(uri).body(new VideoDto(video));
+		VideoDto dto = videosService.register(form);
+		URI uri = uriBuilder.path("/videos/{id}").buildAndExpand(dto .getId()).toUri();
+		return ResponseEntity.created(uri).body(dto);
 	}
 
 	@PutMapping(value = "/{id}")
-	@Transactional
-	@CacheEvict(value = {"listVideos"}, allEntries = true)
+	@CacheEvict(value = { "listVideos" }, allEntries = true)
 	public ResponseEntity<VideoDto> update(
 			@PathVariable Long id, @RequestBody @Valid UpdateVideoForm form) {
-		Optional<Video> optional = videoRepository.findById(id);
 
-		if (optional.isPresent()) {
-			Video video = form.atualizar(id, videoRepository, categoryRepository);
-			return ResponseEntity.ok(new VideoDto(video));
-		}
-		throw new EntityNotFoundException(ExceptionMessages.VIDEO_NOT_FOUND);
+		VideoDto dto = videosService.update(id, form);
+		return ResponseEntity.ok(dto);
 	}
 
 	@DeleteMapping(value = "/{id}")
-	@Transactional
-	@CacheEvict(value = {"listVideos"}, allEntries = true)
+	@CacheEvict(value = { "listVideos" }, allEntries = true)
 	public ResponseEntity<ErrorMessageDto> remove(@PathVariable Long id) {
-		Optional<Video> optional = videoRepository.findById(id);
-
-		if (optional.isPresent()) {
-			videoRepository.delete(optional.get());
-			return ResponseEntity.ok(new ErrorMessageDto(ExceptionMessages.VIDEO_WAS_REMOVED));
-		}
-		throw new EntityNotFoundException(ExceptionMessages.VIDEO_NOT_FOUND);
+		ErrorMessageDto dto = videosService.remove(id);
+		return ResponseEntity.ok(dto);
 	}
 
 }

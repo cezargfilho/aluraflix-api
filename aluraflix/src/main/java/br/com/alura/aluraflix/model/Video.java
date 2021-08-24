@@ -25,7 +25,7 @@ public class Video {
 	@Column(length = 100, nullable = false)
 	private String title;
 
-	@Column(length = 50, nullable = false)
+	@Column(length = 100, nullable = false)
 	private String description;
 
 	@Column(length = 60, nullable = false)
@@ -43,7 +43,6 @@ public class Video {
 		this.description = description;
 		this.url = isUrlValid(url);
 		this.category = category;
-
 	}
 
 	public Long getId() {
